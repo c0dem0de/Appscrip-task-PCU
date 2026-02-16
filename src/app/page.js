@@ -38,7 +38,7 @@ async function getProducts() {
       price: product.price,
       description: product.description,
       category: product.category,
-      image: product.thumbnail, // or product.images[0] for first image
+      image: product.thumbnail,
       rating: {
         rate: product.rating,
         count: product.stock
@@ -71,10 +71,7 @@ export default async function Home() {
         }}
       />
       
-      {/* Header receives dynamic count */}
       <ProductHeader count={products.length} />
-      
-      {/* Products grid receives fetched products */}
       <ProductsGrid products={products} />
     </>
   );
