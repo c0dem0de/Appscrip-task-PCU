@@ -11,8 +11,9 @@ export const metadata = {
 /* Server-side data fetch with error handling */
 async function getProducts() {
   try {
-    const res = await fetch("https://fakestoreapi.com/products", {
-      next: { revalidate: 3600 }, // Cache for 1 hour instead of no-store
+    // Using DummyJSON API - reliable with good product images
+    const res = await fetch("https://dummyjson.com/products?limit=30", {
+      next: { revalidate: 3600 }, // Cache for 1 hour
     });
     
     // Check if response is successful
@@ -29,7 +30,22 @@ async function getProducts() {
     }
     
     const data = await res.json();
-    return data;
+    
+    // Transform DummyJSON format to match your component's expected format
+    const transformedProducts = data.products.map(product => ({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      description: product.description,
+      category: product.category,
+      image: product.thumbnail, // or product.images[0] for first image
+      rating: {
+        rate: product.rating,
+        count: product.stock
+      }
+    }));
+    
+    return transformedProducts;
   } catch (error) {
     console.error("Error fetching products:", error.message);
     // Return empty array as fallback to prevent app crash
